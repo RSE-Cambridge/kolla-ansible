@@ -129,6 +129,52 @@
   notify:
     - Restart prometheus-openstack-exporter container
 
+- name: Copying over built in mtail progs
+  vars:
+    service: "{{ prometheus_services['prometheus-mtail'] }}"
+  template:
+    src: "{{ role_path }}/templates/mtail_progs/{{ item }}.mtail.j2"
+    dest: "{{ node_config_directory }}/prometheus-mtail/{{ item }}.mtail"
+    mode: "0660"
+  become: true
+  register: prometheus_mtail_progs
+  when:
+    - inventory_hostname in groups[service.group]
+    - service.enabled | bool
+  with_items:
+    - "syslog"
+  notify:
+    - Restart prometheus-mtail container
+
+- name: Find custom mtail progs
+  vars:
+    service: "{{ prometheus_services['prometheus-mtail'] }}"
+  local_action:
+    module: find
+    path: "{{ node_custom_config }}/mtail"
+    pattern: "*.mtail"
+  run_once: True
+  register: find_custom_mtail_progs
+  when:
+    - inventory_hostname in groups[service.group]
+    - service.enabled | bool
+
+- name: Copying over custom mtail progs
+  vars:
+    service: "{{ prometheus_services['prometheus-mtail'] }}"
+  template:
+    src: "{{ item.path }}"
+    dest: "{{ node_config_directory }}/prometheus-mtail/{{ item.path | basename }}"
+    mode: "0660"
+  become: true
+  register: prometheus_mtail_custom_progs
+  when:
+    - inventory_hostname in groups[service.group]
+    - service.enabled | bool
+  with_items: "{{ find_custom_mtail_progs.files }}"
+  notify:
+    - Restart prometheus-mtail container
+
 - name: Check prometheus containers
   become: true
   kolla_docker:
