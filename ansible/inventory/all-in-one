@@ -759,3 +759,6 @@ control
 compute
 network
 storage
+
+[prometheus-libvirt-exporter:children]
+compute

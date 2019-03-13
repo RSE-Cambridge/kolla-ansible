@@ -137,6 +137,16 @@ prometheus_services:
       - "/var/log/secure:/var/log/secure:ro"
       - "/var/log/messages:/var/log/messages:ro"
     dimensions: "{{ prometheus_mtail_dimensions }}"
+  prometheus-libvirt-exporter:
+    container_name: "prometheus_libvirt_exporter"
+    group: "prometheus-libvirt-exporter"
+    enabled: "{{ enable_prometheus_libvirt_exporter | bool }}"
+    image: "{{ prometheus_libvirt_exporter_image_full }}"
+    volumes:
+      - "{{ node_config_directory }}/prometheus-libvirt-exporter/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+      - "libvirtd_run:/var/run/libvirt:ro"
+    dimensions: "{{ prometheus_libvirt_exporter_dimensions }}"
 
 ####################
 # Database
@@ -198,6 +208,10 @@ prometheus_mtail_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{
 prometheus_mtail_tag: "{{ prometheus_tag }}"
 prometheus_mtail_image_full: "{{ prometheus_mtail_image }}:{{ prometheus_mtail_tag }}"
 
+prometheus_libvirt_exporter_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ prometheus_install_type }}-prometheus-libvirt-exporter"
+prometheus_libvirt_exporter_tag: "{{ prometheus_tag }}"
+prometheus_libvirt_exporter_image_full: "{{ prometheus_libvirt_exporter_image }}:{{ prometheus_libvirt_exporter_tag }}"
+
 prometheus_server_dimensions: "{{ default_container_dimensions }}"
 prometheus_haproxy_exporter_dimensions: "{{ default_container_dimensions }}"
 prometheus_mysqld_exporter_dimensions: "{{ default_container_dimensions }}"
@@ -208,3 +222,4 @@ prometheus_alertmanager_dimensions: "{{ default_container_dimensions }}"
 prometheus_openstack_exporter_dimensions: "{{ default_container_dimensions }}"
 prometheus_elasticsearch_exporter_dimensions: "{{ default_container_dimensions }}"
 prometheus_mtail_dimensions: "{{ default_container_dimensions }}"
+prometheus_libvirt_exporter_dimensions: "{{ default_container_dimensions }}"
