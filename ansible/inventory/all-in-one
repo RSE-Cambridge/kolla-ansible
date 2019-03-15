@@ -762,3 +762,7 @@ storage
 
 [prometheus-libvirt-exporter:children]
 compute
+
+# Caso
+[caso:children]
+monitoring
