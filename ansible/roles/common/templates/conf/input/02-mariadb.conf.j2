@@ -9,4 +9,5 @@
   format1 /^(?<time>\d{6} \d{1,2}:\d{1,2}:\d{1,2}) (\[(?<log_level>\S+)\]|mysqld_safe) (?<Payload>.*)/
   time_format %y%m%d %k:%M:%S
   enable_watch_timer false
+  emit_unmatched_lines true
 </source>
