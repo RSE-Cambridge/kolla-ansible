@@ -1,0 +1,11 @@
+{
+    "command": "/opt/dellhw_exporter -web.listen-address {{ api_interface_address }}:{{ prometheus_dellhw_exporter_port }}",
+    "config_files": [],
+    "permissions": [
+        {
+            "path": "/var/log/kolla/prometheus",
+            "owner": "prometheus:kolla",
+            "recurse": true
+        }
+    ]
+}

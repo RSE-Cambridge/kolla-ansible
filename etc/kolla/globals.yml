@@ -510,3 +510,4 @@ tempest_floating_network_name:
 #enable_prometheus_libvirt_exporter: "{{ enable_prometheus | bool and enable_nova | bool }}"
 #enable_prometheus_ceph_mgr_exporter: "{{ enable_prometheus | bool and enable_ceph | bool }}"
 #enable_prometheus_jiralert: "{{ enable_prometheus | bool and enable_prometheus_jiralert | bool }}"
+#enable_prometheus_dellhw_exporter: "no"

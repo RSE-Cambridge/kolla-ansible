@@ -122,3 +122,13 @@ alerting:
         - '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ hostvars[host]['prometheus_alertmanager_port'] }}'
 {% endfor %}
 {% endif %}
+
+{% if enable_prometheus_dellhw_exporter | bool %}
+  - job_name: dellhw_exporter
+    scrape_interval: {{ prometheus_dellhw_exporter_interval }}
+    static_configs:
+      - targets:
+{% for host in groups["prometheus-dellhw-exporter"] %}
+        - '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ hostvars[host]['prometheus_dellhw_exporter_port'] }}'
+{% endfor %}
+{% endif %}

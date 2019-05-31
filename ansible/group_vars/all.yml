@@ -293,6 +293,7 @@ prometheus_cadvisor_port: "18080"
 prometheus_mtail_port: "9197"
 prometheus_libvirt_exporter_port: "9177"
 prometheus_jiralert_port: "9097"
+prometheus_dellhw_exporter_port: "9137"
 
 # Prometheus alertmanager ports
 prometheus_alertmanager_port: "9093"
@@ -883,6 +884,9 @@ enable_prometheus_jiralert: "no"
 prometheus_jiralert_api_url:
 prometheus_jiralert_user:
 prometheus_jiralert_project:
+
+# Prometheus Dell hardware exporter settings
+enable_prometheus_dellhw_exporter: "no"
 
 prometheus_alertmanager_user: "admin"
 prometheus_openstack_exporter_interval: "60s"

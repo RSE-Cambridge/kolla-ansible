@@ -1,0 +1,5 @@
+---
+features:
+  - |
+    Deploys and configures the prometheus-dellhw-exporter (https://github.com/galexrt/dellhw_exporter)
+    for monitoring Dell hardware.

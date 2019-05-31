@@ -136,6 +136,15 @@ prometheus_services:
       - "/etc/localtime:/etc/localtime:ro"
       - "kolla_logs:/var/log/kolla/"
     dimensions: "{{ prometheus_jiralert_dimensions }}"
+  prometheus-dellhw-exporter:
+    container_name: "prometheus_dellhw_exporter"
+    group: "prometheus-dellhw-exporter"
+    enabled: "{{ enable_prometheus_dellhw_exporter | bool }}"
+    image: "{{ prometheus_dellhw_exporter_image_full }}"
+    volumes:
+      - "{{ node_config_directory }}/prometheus-dellhw-exporter/:{{ container_config_directory }}/:ro"
+      - "/etc/localtime:/etc/localtime:ro"
+    dimensions: "{{ prometheus_dellhw_exporter_dimensions }}"
 
 ####################
 # Database
@@ -210,6 +219,10 @@ prometheus_jiralert_image: "{{ docker_registry ~ '/' if docker_registry else '' 
 prometheus_jiralert_tag: "{{ prometheus_tag }}"
 prometheus_jiralert_image_full: "{{ prometheus_jiralert_image }}:{{ prometheus_jiralert_tag }}"
 
+prometheus_hw_exporter_image: "{{ docker_registry ~ '/' if docker_registry else '' }}{{ docker_namespace }}/{{ kolla_base_distro }}-{{ kolla_install_type }}-prometheus-dellhw-exporter"
+prometheus_hw_exporter_tag: "{{ prometheus_tag }}"
+prometheus_hw_exporter_image_full: "{{ prometheus_hw_exporter_image }}:{{ prometheus_dellhw_exporter_tag }}"
+
 prometheus_server_dimensions: "{{ default_container_dimensions }}"
 prometheus_haproxy_exporter_dimensions: "{{ default_container_dimensions }}"
 prometheus_mysqld_exporter_dimensions: "{{ default_container_dimensions }}"
@@ -222,3 +235,4 @@ prometheus_mtail_dimensions: "{{ default_container_dimensions }}"
 prometheus_elasticsearch_exporter_dimensions: "{{ default_container_dimensions }}"
 prometheus_libvirt_exporter_dimensions: "{{ default_container_dimensions }}"
 prometheus_jiralert_dimensions: "{{ default_container_dimensions }}"
+prometheus_dellhw_exporter_dimensions: "{{ default_container_dimensions }}"

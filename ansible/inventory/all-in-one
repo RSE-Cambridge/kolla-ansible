@@ -720,3 +720,10 @@ compute
 
 [prometheus-jiralert:children]
 prometheus-alertmanager
+
+[prometheus-dellhw-exporter:children]
+monitoring
+control
+compute
+network
+storage
