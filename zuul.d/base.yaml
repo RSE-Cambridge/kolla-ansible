@@ -4,10 +4,11 @@
     pre-run: tests/pre.yml
     run: tests/run.yml
     post-run: tests/post.yml
-    attempts: 1
+    attempts: 5
     timeout: 7200
     required-projects:
       - openstack/kolla
+      - openstack/kolla-ansible
       - openstack/requirements
     irrelevant-files:
       - ^.*\.rst$
@@ -16,6 +17,13 @@
       - ^releasenotes/.*$
     vars:
       scenario: aio
+    host-vars:
+      primary:
+        ansible_python_interpreter: python2
+      secondary1:
+        ansible_python_interpreter: python2
+      secondary2:
+        ansible_python_interpreter: python2
     roles:
       - zuul: zuul/zuul-jobs
 

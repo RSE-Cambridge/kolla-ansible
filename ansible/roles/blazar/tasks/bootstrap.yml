@@ -8,7 +8,6 @@
       login_user: "{{ database_user }}"
       login_password: "{{ database_password }}"
       name: "{{ blazar_database_name }}"
-  register: database
   run_once: True
   delegate_to: "{{ groups['blazar-api'][0] }}"
 
@@ -34,13 +33,13 @@
   command: >
     docker exec kolla_toolbox openstack
     --os-interface internal
-    --os-auth-url {{ keystone_admin_url }}
+    --os-auth-url {{ openstack_auth.auth_url }}
     --os-identity-api-version 3
-    --os-project-domain-name default
-    --os-tenant-name admin
-    --os-username admin
-    --os-password {{ keystone_admin_password }}
-    --os-user-domain-name default
+    --os-project-domain-name {{ openstack_auth.domain_name }}
+    --os-project-name {{ openstack_auth.project_name }}
+    --os-username {{ openstack_auth.username }}
+    --os-password {{ openstack_auth.password }}
+    --os-user-domain-name {{ openstack_auth.user_domain_name }}
     --os-region-name {{ openstack_region_name }}
     aggregate create {{ blazar_aggregate_pool_name }}
   register: blazar_host_aggregate
@@ -52,4 +51,3 @@
   delegate_to: "{{ groups['blazar-api'][0] }}"
 
 - include_tasks: bootstrap_service.yml
-  when: database.changed
