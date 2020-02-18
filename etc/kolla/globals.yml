@@ -56,6 +56,8 @@ kolla_internal_vip_address: "10.10.10.254"
 #docker_namespace: "companyname"
 #docker_registry_username: "sam"
 #docker_registry_password: "correcthorsebatterystaple"
+# Docker client timeout in seconds.
+#docker_client_timeout: 120
 
 #docker_configure_for_zun: "no"
 
@@ -445,6 +447,8 @@ glance_enable_rolling_upgrade: "no"
 # Valid options are [ bind9 ]
 #designate_backend: "bind9"
 #designate_ns_record: "sample.openstack.org"
+# Valid options are [ '', redis, etcd ]
+#designate_coordination_backend: "{{ 'redis' if enable_redis|bool else 'etcd' if enable_etcd|bool else '' }}"
 
 ########################
 # Nova - Compute Options
@@ -588,6 +592,9 @@ tempest_floating_network_name:
 #enable_prometheus_ceph_mgr_exporter: "{{ enable_prometheus | bool and enable_ceph | bool }}"
 #enable_prometheus_openstack_exporter: "{{ enable_prometheus | bool }}"
 #enable_prometheus_elasticsearch_exporter: "{{ enable_prometheus | bool and enable_elasticsearch | bool }}"
+#enable_prometheus_mtail: "{{ enable_prometheus | bool }}"
+#enable_prometheus_libvirt_exporter: "{{ enable_prometheus | bool and enable_nova | bool }}"
+#enable_prometheus_jiralert: "{{ enable_prometheus | bool and enable_prometheus_jiralert | bool }}"
 
 # List of extra parameters passed to prometheus. You can add as many to the list.
 #prometheus_cmdline_extras:

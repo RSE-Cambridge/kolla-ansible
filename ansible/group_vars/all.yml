@@ -94,6 +94,8 @@ docker_registry:
 docker_namespace: "kolla"
 docker_registry_username:
 docker_registry_insecure: "{{ 'yes' if docker_registry else 'no' }}"
+# Docker client timeout in seconds.
+docker_client_timeout: 120
 
 # Retention settings for Docker logs
 docker_log_max_file: 5
@@ -119,6 +121,7 @@ docker_common_options:
     KOLLA_CONFIG_STRATEGY: "{{ config_strategy }}"
   restart_policy: "{{ docker_restart_policy }}"
   restart_retries: "{{ docker_restart_policy_retry }}"
+  client_timeout: "{{ docker_client_timeout }}"
 
 ####################
 # Dimensions options
@@ -202,6 +205,8 @@ barbican_api_listen_port: "{{ barbican_api_port }}"
 
 blazar_api_port: "1234"
 
+caso_tcp_output_port: "24224"
+
 cinder_internal_fqdn: "{{ kolla_internal_fqdn }}"
 cinder_external_fqdn: "{{ kolla_external_fqdn }}"
 cinder_api_port: "8776"
@@ -259,7 +264,6 @@ heat_api_cfn_listen_port: "{{ heat_api_cfn_port }}"
 horizon_port: "80"
 horizon_listen_port: "{{ horizon_port }}"
 
-influxdb_admin_port: "8083"
 influxdb_http_port: "8086"
 
 ironic_internal_fqdn: "{{ kolla_internal_fqdn }}"
@@ -362,6 +366,9 @@ prometheus_memcached_exporter_port: "9150"
 prometheus_ceph_mgr_exporter_port: "9283"
 # Default cadvisor port of 8080 already in use
 prometheus_cadvisor_port: "18080"
+prometheus_mtail_port: "9197"
+prometheus_libvirt_exporter_port: "9177"
+prometheus_jiralert_port: "9097"
 
 # Prometheus alertmanager ports
 prometheus_alertmanager_port: "9093"
@@ -513,6 +520,7 @@ enable_haproxy_memcached: "yes"
 enable_aodh: "no"
 enable_barbican: "no"
 enable_blazar: "no"
+enable_caso: "no"
 enable_cadf_notifications: "no"
 enable_ceilometer: "no"
 enable_ceilometer_ipmi: "no"
@@ -520,6 +528,7 @@ enable_central_logging: "no"
 enable_ceph: "no"
 enable_ceph_mds: "no"
 enable_ceph_rgw: "no"
+enable_ceph_rgw_external: "no"
 enable_ceph_nfs: "no"
 enable_ceph_dashboard: "{{ enable_ceph | bool }}"
 enable_chrony: "yes"
@@ -852,6 +861,8 @@ designate_backend: "bind9"
 designate_ns_record: "sample.openstack.org"
 designate_backend_external: "no"
 designate_backend_external_bind9_nameservers: ""
+# Valid options are [ '', redis, etcd ]
+designate_coordination_backend: "{{ 'redis' if enable_redis|bool else 'etcd' if enable_etcd|bool else '' }}"
 
 #######################
 # Neutron options
@@ -1031,11 +1042,21 @@ enable_prometheus_alertmanager: "{{ enable_prometheus | bool }}"
 enable_prometheus_ceph_mgr_exporter: "{{ enable_ceph | bool and enable_prometheus | bool }}"
 enable_prometheus_openstack_exporter: "{{ enable_prometheus | bool }}"
 enable_prometheus_elasticsearch_exporter: "{{ enable_prometheus | bool and enable_elasticsearch | bool }}"
+enable_prometheus_mtail: "{{ enable_prometheus | bool }}"
+enable_prometheus_libvirt_exporter: "{{ enable_prometheus | bool and enable_nova | bool }}"
+
+# Prometheus Jiralert settings
+enable_prometheus_jiralert: "no"
+prometheus_jiralert_api_url:
+prometheus_jiralert_user:
+prometheus_jiralert_project:
 
 prometheus_alertmanager_user: "admin"
 prometheus_openstack_exporter_interval: "60s"
 prometheus_elasticsearch_exporter_interval: "60s"
 prometheus_cmdline_extras:
+prometheus_mtail_interval: "10s"
+prometheus_libvirt_exporter_interval: "60s"
 
 ############
 # Vitrage

@@ -5,7 +5,7 @@ global:
   external_labels:
     monitor: 'kolla'
 
-{% if prometheus_alert_rules is defined and prometheus_alert_rules.files | length  > 0 %}
+{% if prometheus_alert_rules.files is defined and prometheus_alert_rules.files | length  > 0 %}
 rule_files:
 {% for rule in prometheus_alert_rules.files %}
   - "/etc/prometheus/{{ rule.path | basename }}"
@@ -65,7 +65,7 @@ scrape_configs:
 {% endfor %}
 {% endif %}
 
-{% if enable_prometheus_ceph_mgr_exporter | bool %}
+{% if enable_prometheus_ceph_mgr_exporter | bool or enable_prometheus_external_ceph_mgr_exporter | bool %}
   - job_name: ceph_mgr_exporter
     honor_labels: true
     static_configs:
@@ -93,6 +93,27 @@ scrape_configs:
       - targets:
 {% for host in groups["prometheus-elasticsearch-exporter"] %}
         - '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ hostvars[host]['prometheus_elasticsearch_exporter_port'] }}'
+{% endfor %}
+{% endif %}
+
+{% if enable_prometheus_mtail | bool %}
+  - job_name: mtail
+    scrape_interval: {{ prometheus_mtail_interval }}
+    honor_labels: true
+    static_configs:
+      - targets:
+{% for host in groups["prometheus-mtail"] %}
+        - '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ hostvars[host]['prometheus_mtail_port'] }}'
+{% endfor %}
+{% endif %}
+
+{% if enable_prometheus_libvirt_exporter | bool %}
+  - job_name: libvirt_exporter
+    scrape_interval: {{ prometheus_libvirt_exporter_interval }}
+    static_configs:
+      - targets:
+{% for host in groups["prometheus-libvirt-exporter"] %}
+        - '{{ hostvars[host]['ansible_' + hostvars[host]['api_interface']]['ipv4']['address'] }}:{{ hostvars[host]['prometheus_libvirt_exporter_port'] }}'
 {% endfor %}
 {% endif %}
 

@@ -32,3 +32,24 @@
       auth: "{{ openstack_glance_auth }}"
       endpoint_type: "{{ openstack_interface }}"
   run_once: True
+
+- name: Creating the Swift service and endpoint for external rgw
+  kolla_toolbox:
+    module_name: kolla_keystone_service
+    module_args:
+      service_name: "swift"
+      service_type: "object-store"
+      description: "Openstack Object Storage"
+      endpoint_region: "{{ openstack_region_name }}"
+      url: "{{ item.url }}"
+      interface: "{{ item.interface }}"
+      region_name: "{{ openstack_region_name }}"
+      auth: "{{ openstack_ceph_rgw_auth }}"
+      endpoint_type: "{{ openstack_interface }}"
+  run_once: True
+  with_items:
+    - {'interface': 'admin', 'url': '{{ swift_admin_endpoint }}'}
+    - {'interface': 'internal', 'url': '{{ swift_internal_endpoint }}'}
+    - {'interface': 'public', 'url': '{{ swift_public_endpoint }}'}
+  when:
+    - "{{ enable_ceph_rgw_external | bool }}"
