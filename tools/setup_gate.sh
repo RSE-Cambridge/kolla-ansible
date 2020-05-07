@@ -10,15 +10,16 @@ GIT_PROJECT_DIR=$(mktemp -d)
 
 function setup_openstack_clients {
     # Prepare virtualenv for openstack deployment tests
-    virtualenv ~/openstackclient-venv
-    ~/openstackclient-venv/bin/pip install -U pip
-    ~/openstackclient-venv/bin/pip install python-openstackclient
+    local packages=(python-openstackclient)
     if [[ $ACTION == zun ]]; then
-        ~/openstackclient-venv/bin/pip install python-zunclient
+        packages+=(python-zunclient)
     fi
     if [[ $ACTION == ironic ]]; then
-        ~/openstackclient-venv/bin/pip install python-ironicclient
+        packages+=(python-ironicclient)
     fi
+    virtualenv ~/openstackclient-venv
+    ~/openstackclient-venv/bin/pip install -U pip
+    ~/openstackclient-venv/bin/pip install -c $UPPER_CONSTRAINTS ${packages[@]}
 }
 
 function setup_config {
@@ -123,7 +124,7 @@ function setup_ansible {
     fi
 
     # TODO(SamYaple): Move to virtualenv
-    sudo pip install -U "ansible${ANSIBLE_VERSION}" "ara<1.0.0"
+    sudo pip install -U "ansible${ANSIBLE_VERSION}" "ara<1.0.0" "pyfakefs<4"
 
     detect_distro
 
