@@ -1,10 +1,12 @@
 ---
 - name: Copying over ceph.conf for manila
-  template:
-    src: "{{ node_custom_config }}/manila/ceph.conf"
-    dest: "{{ node_config_directory }}/manila-share/ceph.conf"
+  copy:
+    src: "{{ item }}"
+    dest: "{{ node_config_directory }}/manila-share/"
     mode: "0660"
   become: true
+  with_fileglob:
+    - "{{ node_custom_config }}/manila/ceph*.conf"
   when:
     - inventory_hostname in groups['manila-share']
   notify:
@@ -17,7 +19,7 @@
     mode: "0600"
   become: true
   with_fileglob:
-    - "{{ node_custom_config }}/manila/ceph.client*"
+    - "{{ node_custom_config }}/manila/ceph*.client*"
   when:
     - inventory_hostname in groups['manila-share']
   notify:
